@@ -24,7 +24,7 @@ die übergeordnete Architektur in [`architecture.md`](architecture.md).
 | **Ingestion** | Host (manuell) | Liest Quellen, chunked, embeddet, schreibt in DB |
 | **Ollama** | Host (lokal) | Erzeugt Embeddings (`nomic-embed-text`, 768 dim) |
 | **Open WebUI** | Host (lokal) | Chat-Interface, bindet MCP-Server ein |
-| **LLM** | Cloud | Groq oder Google Gemini (kostenlos) |
+| **LLM** | Cloud oder lokal | LLM-Modell, entweder Cloud oder lokal |
 
 ---
 
@@ -47,7 +47,7 @@ Folgende Software muss auf dem Host installiert sein:
   winget install astral-sh.uv
   ```
 
-- **Groq-Account** (kostenlos) oder **Google AI Studio-Account** (kostenlos) für den LLM-Zugang
+- Lokales LLM oder API-Key für Cloud-LLM
 
 ---
 
@@ -90,7 +90,7 @@ aufgenommen, da sie vertrauliche Angaben enthalten kann (interne URLs, Zugangsda
 | `CHUNK_OVERLAP` | Überlappung zwischen Chunks in Zeichen (Standard: `150`) |
 | `DATABASE_URL` | Verbindungs-URL für die Ingestion (s. unten) |
 
-> Das LLM (Groq / Gemini) wird **nicht** in `.env` konfiguriert, sondern direkt in Open WebUI
+> Das LLM wird **nicht** in `.env` konfiguriert, sondern direkt in Open WebUI
 > — siehe [Open WebUI einrichten](#open-webui-einrichten).
 
 **`DATABASE_URL` für die Ingestion:**
@@ -174,9 +174,9 @@ Ausgabe-Beispiel:
 
 ### 1. LLM konfigurieren
 
-Das LLM (Groq oder Google Gemini) wird direkt in Open WebUI konfiguriert — nicht über `.env`.
+Das LLM wird direkt in Open WebUI konfiguriert — nicht über `.env`.
 
-**Admin Panel → Settings → Connections → OpenAI API** → neue Verbindung hinzufügen:
+**Admin Panel → Settings → Connections → OpenAI API** → neue Verbindung hinzufügen. Beispiel für Groq und Gemini:
 
 | | Groq | Google Gemini Flash |
 |---|---|---|
@@ -196,10 +196,11 @@ in OpenAPI und läuft als eigener Container im Docker-Stack.
 - URL: `http://localhost:8081/knowledge-retriever`
 - Kein API-Key nötig
 
-### 3. Tools im Chat aktivieren
+### 3. Tools für das Modell aktivieren
 
-Im Chat-Fenster die gewünschten Tools aktivieren (z.B. `search_egeko_public_website`,
-`search_wikipedia_ai`) — der LLM entscheidet dann selbst, wann er sie aufruft.
+In Open WebUI werden Tools zu Modellen hinzugefügt:
+
+**Admin Panel → Settings → Models** → gewünschtes Modell bearbeiten → ai-knowledge-retriever aktivieren
 
 ---
 
