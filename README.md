@@ -196,7 +196,7 @@ in OpenAPI und läuft als eigener Container im Docker-Stack.
 - URL: `http://localhost:8081/knowledge-retriever`
 - Kein API-Key nötig
 
-### 3. Tools für das Modell aktivieren
+### 3. Tool für das Modell aktivieren
 
 In Open WebUI werden Tools zu Modellen hinzugefügt:
 
