@@ -1,0 +1,20 @@
+sources:
+  - slug: wikipedia_ai
+    display_name: "Wikipedia – AI Articles"
+    description: >
+      Search Wikipedia articles about artificial intelligence topics including large language
+      models, RAG, vector databases, the Model Context Protocol, transformers, NLP, and
+      prompt engineering. Use this tool for general knowledge questions about AI concepts
+      and technology.
+    type: wikipedia
+    config:
+      language: en
+      pages:
+        - Artificial_intelligence
+        - Large_language_model
+        - Retrieval-augmented_generation
+        - Vector_database
+        - Model_Context_Protocol
+        - Transformer_(deep_learning_architecture)
+        - Natural_language_processing
+        - Prompt_engineering

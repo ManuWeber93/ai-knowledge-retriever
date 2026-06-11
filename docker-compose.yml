@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_DB: knowledge
+      POSTGRES_USER: retriever
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    ports:
+      - "5431:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U retriever -d knowledge"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  mcp-server:
+    build: ./mcp-server
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://retriever:${POSTGRES_PASSWORD}@postgres:5432/knowledge
+      EMBEDDING_BASE_URL: http://host.docker.internal:11434/v1
+    volumes:
+      - ./sources.yaml:/app/sources.yaml:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; socket.create_connection(('localhost', 8000), timeout=2).close()"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  mcpo:
+    image: ghcr.io/open-webui/mcpo:main
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./mcpo-config.json:/app/config.json:ro
+    command: ["--port", "8081", "--config", "/app/config.json"]
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+    restart: on-failure
+
+volumes:
+  pgdata:
